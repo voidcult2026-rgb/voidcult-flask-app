@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice #{{ order['order_number'] }}</title>
+<style>body{font-family:sans-serif;padding:40px;color:#111;} table{width:100%;border-collapse:collapse;margin-top:20px;} td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left;} h1{letter-spacing:2px;}</style>
+</head><body>
+<h1>VOID CULT</h1>
+<p>Invoice for Order #{{ order['order_number'] }} — {{ order['created_at'] }}</p>
+<p>{{ order['address_name'] }}<br>{{ order['address_line1'] }}, {{ order['address_city'] }}, {{ order['address_state'] }} {{ order['address_pincode'] }}</p>
+<table><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>
+{% for item in items %}<tr><td>{{ item['product_name'] }}</td><td>{{ item['qty'] }}</td><td>₹{{ inr(item['price']) }}</td><td>₹{{ inr(item['price']*item['qty']) }}</td></tr>{% endfor %}
+</tbody></table>
+<p style="text-align:right;font-size:18px;margin-top:20px;"><strong>Total: ₹{{ inr(order['total']) }}</strong></p>
+<script>window.print();</script>
+</body></html>

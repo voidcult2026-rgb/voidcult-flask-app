@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My Account — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:60px;">
+  <h1 class="display" style="font-size:30px;margin-bottom:36px;">My Account</h1>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+    <div>
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-bottom:16px;">Order History</h3>
+      {% if orders %}
+        {% for o in orders %}
+        <a href="{{ url_for('auth.track_order', order_number=o['order_number']) }}" style="display:block;border:1px solid var(--line);padding:16px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;"><span>#{{ o['order_number'] }}</span><span class="tag">{{ o['status'] }}</span></div>
+          <p style="color:var(--gray);font-size:12px;margin-top:8px;">₹{{ '{:,.0f}'.format(o['total']) }} — {{ o['created_at'] }}</p>
+        </a>
+        {% endfor %}
+      {% else %}<p style="color:var(--gray);">No orders yet.</p>{% endif %}
+
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin:30px 0 16px;">Saved Addresses</h3>
+      {% for a in addresses %}
+      <div style="border:1px solid var(--line);padding:14px;margin-bottom:10px;font-size:13px;color:var(--gray);">
+        {{ a['full_name'] }}<br>{{ a['line1'] }}, {{ a['city'] }}, {{ a['state'] }} {{ a['pincode'] }}<br>{{ a['phone'] }}
+      </div>
+      {% endfor %}
+      <form method="post" action="{{ url_for('auth.add_address') }}" style="margin-top:14px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="form-group"><input name="full_name" placeholder="Full name" required></div>
+        <div class="form-group"><input name="line1" placeholder="Address line" required></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <input name="city" placeholder="City" required><input name="state" placeholder="State" required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;">
+          <input name="pincode" placeholder="Pincode" required><input name="phone" placeholder="Phone" required>
+        </div>
+        <button type="submit" class="btn btn-outline btn-sm">Save Address</button>
+      </form>
+    </div>
+    <div>
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-bottom:16px;">Wishlist</h3>
+      <div class="product-grid" style="grid-template-columns:repeat(2,1fr);">
+        {% for p in wishlist %}
+        <div class="product-card">
+          <a href="{{ url_for('main.product_detail', slug=p['slug']) }}">
+            <div class="product-media"></div>
+            <div class="product-info"><h3>{{ p['name'] }}</h3><p class="price-row">₹{{ '{:,.0f}'.format(p['discount_price'] or p['price']) }}</p></div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% if not wishlist %}<p style="color:var(--gray);">Nothing saved yet.</p>{% endif %}
+      <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-sm" style="margin-top:30px;">Logout</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

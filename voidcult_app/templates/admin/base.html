@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Admin{% endblock %} — VOID CULT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar">
+    <div class="brand display">VOID<br>CULT<div style="font-family:'Inter';text-transform:none;font-size:10px;color:var(--gray);margin-top:4px;font-weight:500;">Admin Console</div></div>
+    <nav>
+      <a class="nav-item {{ 'active' if active=='dashboard' }}" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+      <a class="nav-item {{ 'active' if active=='orders' }}" href="{{ url_for('admin.orders') }}">Orders</a>
+      <a class="nav-item {{ 'active' if active=='products' }}" href="{{ url_for('admin.products') }}">Products</a>
+      <a class="nav-item {{ 'active' if active=='collections' }}" href="{{ url_for('admin.collections') }}">Collections</a>
+      <a class="nav-item {{ 'active' if active=='categories' }}" href="{{ url_for('admin.categories') }}">Categories</a>
+      <a class="nav-item {{ 'active' if active=='customers' }}" href="{{ url_for('admin.customers') }}">Customers</a>
+      <a class="nav-item {{ 'active' if active=='coupons' }}" href="{{ url_for('admin.coupons') }}">Coupons</a>
+      <div class="nav-divider"></div>
+      <a class="nav-item {{ 'active' if active=='cms' }}" href="{{ url_for('admin.settings') }}">CMS / Settings</a>
+      <a class="nav-item {{ 'active' if active=='media' }}" href="{{ url_for('admin.media') }}">Media Library</a>
+      <a class="nav-item {{ 'active' if active=='reviews' }}" href="{{ url_for('admin.reviews') }}">Reviews</a>
+      <a class="nav-item {{ 'active' if active=='staff' }}" href="{{ url_for('admin.staff') }}">Staff Accounts</a>
+      <div class="nav-divider"></div>
+      <a class="nav-item" href="{{ url_for('admin.logout') }}">Logout</a>
+    </nav>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <h1 class="display" style="font-size:20px;">{% block page_title %}Dashboard{% endblock %}</h1>
+      <a href="{{ url_for('main.home') }}" target="_blank" class="btn btn-outline btn-sm">View Live Site</a>
+    </div>
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:60px;max-width:760px;">
+  <h1 class="display" style="font-size:34px;margin-bottom:30px;">{{ title }}</h1>
+  {% if content_key %}
+    <div style="color:var(--gray);line-height:1.9;white-space:pre-line;">{{ site_setting(content_key) }}</div>
+  {% else %}
+    <div style="color:var(--gray);line-height:1.9;">
+      <p>Email: {{ site_setting('contact_email') }}</p>
+      <p>Phone: {{ site_setting('contact_phone') }}</p>
+      <p>Instagram: <a href="{{ site_setting('instagram_url') }}" style="color:#fff;">{{ site_setting('instagram_url') }}</a></p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

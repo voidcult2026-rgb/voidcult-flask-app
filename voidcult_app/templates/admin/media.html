@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}{% set active='media' %}{% block page_title %}Media Library{% endblock %}
+{% block content %}
+<div class="folder-tabs">
+  {% for f in ['hero','banners','products','collections','videos','icons'] %}
+  <a href="{{ url_for('admin.media', folder=f) }}" class="{{ 'active' if folder==f }}">{{ f|capitalize }}</a>
+  {% endfor %}
+</div>
+<form method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <div class="dropzone" data-input="media-input" style="margin-bottom:24px;">
+    Drag &amp; drop files here, or click to upload to <strong>{{ folder }}</strong> — images compressed automatically
+  </div>
+  <input type="file" id="media-input" name="files[]" multiple accept="image/*" style="display:none;" onchange="this.form.submit()">
+</form>
+<div class="media-grid">
+  {% for f in files %}
+  <div class="media-tile">
+    <img src="{{ url_for('static', filename='uploads/site/' + folder + '/' + f) }}">
+    <form action="{{ url_for('admin.media_delete', folder=folder, filename=f) }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit">✕</button>
+    </form>
+  </div>
+  {% endfor %}
+  {% if not files %}<p style="color:var(--gray);grid-column:1/-1;">No files in this folder yet.</p>{% endif %}
+</div>
+{% endblock %}

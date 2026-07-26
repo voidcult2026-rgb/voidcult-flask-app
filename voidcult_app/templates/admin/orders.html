@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}{% set active='orders' %}{% block page_title %}Orders{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="get" style="display:flex;gap:10px;">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Statuses</option>
+      {% for s in ['Pending','Packed','Shipped','Delivered','Cancelled','Refund'] %}
+      <option value="{{ s }}" {{ 'selected' if status==s }}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+<div class="panel" style="padding:0;">
+  <table><thead><tr><th>Order</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>
+    {% for o in orders %}
+    <tr>
+      <td>#{{ o['order_number'] }}</td><td>₹{{ inr(o['total']) }}</td><td>{{ o['payment_method'] }}</td>
+      <td><span class="tag {{ 'ok' if o['status']=='Delivered' else 'warn' }}">{{ o['status'] }}</span></td>
+      <td>{{ o['created_at'] }}</td>
+      <td><a href="{{ url_for('admin.order_detail', order_id=o['id']) }}" class="btn btn-sm btn-ghost">View</a></td>
+    </tr>
+    {% endfor %}
+  </tbody></table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}{% set active='reviews' %}{% block page_title %}Reviews{% endblock %}
+{% block content %}
+<div class="panel" style="padding:0;">
+  <table><thead><tr><th>Product</th><th>Rating</th><th>Comment</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for r in reviews %}
+    <tr>
+      <td>{{ r['product_name'] }}</td><td>{{ '★' * r['rating'] }}</td><td>{{ r['comment'] }}</td>
+      <td><span class="tag {{ 'ok' if r['approved'] else 'warn' }}">{{ 'Published' if r['approved'] else 'Pending' }}</span></td>
+      <td style="display:flex;gap:8px;">
+        {% if not r['approved'] %}<form action="{{ url_for('admin.review_approve', review_id=r['id']) }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-ghost">Approve</button></form>{% endif %}
+        <form action="{{ url_for('admin.review_delete', review_id=r['id']) }}" method="post" onsubmit="return confirm('Delete?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-danger">Delete</button></form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% if not reviews %}<tr><td colspan="5" style="color:var(--gray);">No reviews yet.</td></tr>{% endif %}
+  </tbody></table>
+</div>
+{% endblock %}

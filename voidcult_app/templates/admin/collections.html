@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}{% set active='collections' %}{% block page_title %}Collections{% endblock %}
+{% block content %}
+<div class="panel-row">
+  <div class="panel" style="padding:0;">
+    <table><thead><tr><th>Collection</th><th>Type</th><th>Products</th><th>Status</th><th></th></tr></thead><tbody>
+      {% for c in collections %}
+      <tr><td>{{ c['name'] }}</td><td>{{ c['type'] }}</td><td>{{ c['product_count'] }}</td>
+        <td><span class="tag {{ 'ok' if c['is_active'] else 'warn' }}">{{ 'Live' if c['is_active'] else 'Hidden' }}</span></td>
+        <td style="display:flex;gap:8px;">
+          <form action="{{ url_for('admin.collection_toggle', coll_id=c['id']) }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-ghost">{{ 'Hide' if c['is_active'] else 'Show' }}</button></form>
+          <form action="{{ url_for('admin.collection_delete', coll_id=c['id']) }}" method="post" onsubmit="return confirm('Delete?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-danger">Delete</button></form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <h3>New Collection</h3>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group"><label>Name</label><input name="name" required></div>
+      <div class="form-group"><label>Type</label><select name="type"><option>Featured</option><option>Season</option><option>Limited Edition</option></select></div>
+      <div class="form-group"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+      <div class="form-group"><label>Schedule (optional launch date)</label><input type="date" name="scheduled_at"></div>
+      <div class="form-group"><label style="display:flex;gap:8px;align-items:center;"><input type="checkbox" name="is_featured" style="width:auto;"> Featured on homepage</label></div>
+      <div class="form-group"><label style="display:flex;gap:8px;align-items:center;"><input type="checkbox" name="is_active" checked style="width:auto;"> Live now</label></div>
+      <button type="submit" class="btn btn-solid btn-sm">Create Collection</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

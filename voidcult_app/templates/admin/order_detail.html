@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}{% set active='orders' %}{% block page_title %}Order #{{ order['order_number'] }}{% endblock %}
+{% block content %}
+<div class="panel-row">
+  <div class="panel">
+    <h3>Items</h3>
+    <table><tbody>
+      {% for item in items %}<tr><td>{{ item['product_name'] }}</td><td>{{ item['size'] }} {{ item['color'] }}</td><td>× {{ item['qty'] }}</td><td>₹{{ inr(item['price']*item['qty']) }}</td></tr>{% endfor %}
+    </tbody></table>
+    <p style="margin-top:16px;color:var(--gray);font-size:13px;">
+      {{ order['address_name'] }}<br>{{ order['address_line1'] }}, {{ order['address_city'] }}, {{ order['address_state'] }} {{ order['address_pincode'] }}<br>{{ order['address_phone'] }}
+    </p>
+    <a href="{{ url_for('admin.order_invoice', order_id=order['id']) }}" class="btn btn-outline btn-sm" style="margin-top:16px;">View Invoice</a>
+  </div>
+  <div class="panel">
+    <h3>Update Status</h3>
+    <form method="post" action="{{ url_for('admin.order_update', order_id=order['id']) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group"><label>Status</label>
+        <select name="status">
+          {% for s in ['Pending','Packed','Shipped','Delivered','Cancelled','Refund'] %}
+          <option value="{{ s }}" {{ 'selected' if order['status']==s }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Tracking Number</label><input name="tracking_number" value="{{ order['tracking_number'] or '' }}"></div>
+      <button type="submit" class="btn btn-solid btn-sm">Update Order</button>
+    </form>
+    <div style="margin-top:20px;font-size:13px;color:var(--gray);">
+      <p>Subtotal: ₹{{ inr(order['subtotal']) }}</p>
+      <p>Discount: ₹{{ inr(order['discount']) }}</p>
+      <p>Shipping: ₹{{ inr(order['shipping']) }}</p>
+      <p style="color:#fff;font-weight:700;margin-top:8px;">Total: ₹{{ inr(order['total']) }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

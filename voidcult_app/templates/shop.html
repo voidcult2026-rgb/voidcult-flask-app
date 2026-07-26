@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Shop — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:60px;">
+  <div class="section-head">
+    <div><span class="eyebrow" style="display:block;margin-bottom:16px;">The Full Range</span><h2 class="display">Shop All</h2></div>
+    <p>{{ products|length }} product(s) match your filters.</p>
+  </div>
+
+  <form method="get" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;border-bottom:1px solid var(--line);padding-bottom:24px;">
+    <input type="text" name="q" placeholder="Search" value="{{ filters.get('q','') }}" style="max-width:200px;">
+    <select name="gender">
+      <option value="">All Genders</option>
+      <option value="Men" {{ 'selected' if filters.get('gender')=='Men' }}>Men</option>
+      <option value="Women" {{ 'selected' if filters.get('gender')=='Women' }}>Women</option>
+    </select>
+    <select name="category">
+      <option value="">All Categories</option>
+      {% for c in categories %}<option value="{{ c['slug'] }}" {{ 'selected' if filters.get('category')==c['slug'] }}>{{ c['name'] }}</option>{% endfor %}
+    </select>
+    <select name="collection">
+      <option value="">All Collections</option>
+      {% for c in collections %}<option value="{{ c['slug'] }}" {{ 'selected' if filters.get('collection')==c['slug'] }}>{{ c['name'] }}</option>{% endfor %}
+    </select>
+    <input type="number" name="min_price" placeholder="Min ₹" value="{{ filters.get('min_price','') }}" style="max-width:100px;">
+    <input type="number" name="max_price" placeholder="Max ₹" value="{{ filters.get('max_price','') }}" style="max-width:100px;">
+    <select name="sort">
+      <option value="newest" {{ 'selected' if filters.get('sort','newest')=='newest' }}>Newest</option>
+      <option value="price_low" {{ 'selected' if filters.get('sort')=='price_low' }}>Price: Low to High</option>
+      <option value="price_high" {{ 'selected' if filters.get('sort')=='price_high' }}>Price: High to Low</option>
+    </select>
+    <button type="submit" class="btn btn-outline btn-sm">Apply Filters</button>
+  </form>
+
+  <div class="product-grid">
+    {% for item in products %}{% include "_product_card.html" %}{% endfor %}
+  </div>
+  {% if not products %}
+    <p style="color:var(--gray);">No products match those filters yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

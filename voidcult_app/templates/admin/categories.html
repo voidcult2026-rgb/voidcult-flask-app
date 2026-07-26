@@ -1,0 +1,22 @@
+{% extends "admin/base.html" %}{% set active='categories' %}{% block page_title %}Categories{% endblock %}
+{% block content %}
+<div class="panel-row">
+  <div class="panel" style="padding:0;">
+    <table><thead><tr><th>Category</th><th>Gender</th><th>Products</th><th></th></tr></thead><tbody>
+      {% for c in categories %}
+      <tr><td>{{ c['name'] }}</td><td>{{ c['gender'] }}</td><td>{{ c['product_count'] }}</td>
+        <td><form action="{{ url_for('admin.category_delete', cat_id=c['id']) }}" method="post" onsubmit="return confirm('Delete category?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>
+      {% endfor %}
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <h3>New Category</h3>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group"><label>Name</label><input name="name" required></div>
+      <div class="form-group"><label>Gender</label><select name="gender"><option>Unisex</option><option>Men</option><option>Women</option></select></div>
+      <button type="submit" class="btn btn-solid btn-sm">Add Category</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

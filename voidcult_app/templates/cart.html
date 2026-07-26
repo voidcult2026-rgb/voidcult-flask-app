@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Your Bag — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:60px;">
+  <h1 class="display" style="font-size:32px;margin-bottom:40px;">Your Bag</h1>
+  {% if not cart %}
+    <p style="color:var(--gray);">Your bag is empty. <a href="{{ url_for('main.shop') }}" style="color:#fff;text-decoration:underline;">Continue shopping</a>.</p>
+  {% else %}
+  <div class="cart-layout">
+    <div>
+      {% for item in cart %}
+      <div class="cart-item">
+        <div class="thumb">
+          {% if item.image %}<img src="{{ url_for('static', filename='uploads/products/' + item.image) }}" style="width:100%;height:100%;object-fit:cover;">{% endif %}
+        </div>
+        <div style="flex:1;">
+          <h3 style="font-size:14px;margin-bottom:6px;">{{ item.name }}</h3>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:10px;">{{ item.color }} {{ '/ ' + item.size if item.size }}</p>
+          <form action="{{ url_for('cart.update_cart') }}" method="post" style="display:flex;gap:10px;align-items:center;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="index" value="{{ loop.index0 }}">
+            <input type="number" name="qty" value="{{ item.qty }}" min="0" style="width:60px;">
+            <button type="submit" class="btn btn-ghost btn-sm">Update</button>
+          </form>
+        </div>
+        <span style="font-weight:600;">₹{{ inr(item.price * item.qty) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="summary-box">
+      <form action="{{ url_for('cart.apply_coupon') }}" method="post" style="display:flex;margin-bottom:18px;border:1px solid var(--line-strong);">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="text" name="code" placeholder="Coupon code" value="{{ coupon_code or '' }}" style="border:none;">
+        <button type="submit" style="background:none;border:none;color:#fff;padding:0 16px;text-transform:uppercase;font-size:11px;letter-spacing:.1em;">Apply</button>
+      </form>
+      <div class="subrow"><span>Subtotal</span><span>₹{{ inr(subtotal) }}</span></div>
+      {% if discount %}<div class="subrow"><span>Discount</span><span>−₹{{ inr(discount) }}</span></div>{% endif %}
+      <div class="subrow"><span>Shipping</span><span>{{ '₹'+inr(shipping) if shipping else 'Free' }}</span></div>
+      <div class="subrow total"><span>Total</span><span>₹{{ inr(total) }}</span></div>
+      <a href="{{ url_for('cart.checkout') }}" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:20px;">Checkout</a>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

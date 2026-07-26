@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}{% set active='customers' %}{% block page_title %}Customers{% endblock %}
+{% block content %}
+<div class="panel" style="padding:0;">
+  <table><thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Joined</th></tr></thead><tbody>
+    {% for c in customers %}
+    <tr><td>{{ c['name'] }}</td><td>{{ c['email'] }}</td><td>{{ c['order_count'] }}</td><td>₹{{ inr(c['total_spent']) }}</td><td>{{ c['created_at'] }}</td></tr>
+    {% endfor %}
+  </tbody></table>
+</div>
+{% endblock %}

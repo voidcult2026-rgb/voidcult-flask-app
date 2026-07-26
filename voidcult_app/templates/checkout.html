@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Checkout — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:60px;">
+  <h1 class="display" style="font-size:32px;margin-bottom:40px;">Checkout</h1>
+  <div class="cart-layout">
+    <form method="post" id="checkout-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <h3 style="margin-bottom:16px;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);">Delivery Address</h3>
+      <div class="form-group"><label>Full Name</label><input name="full_name" required value="{{ user['name'] if user }}"></div>
+      <div class="form-group"><label>Address Line</label><input name="line1" required></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-group"><label>City</label><input name="city" required></div>
+        <div class="form-group"><label>State</label><input name="state" required></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-group"><label>Pincode</label><input name="pincode" required></div>
+        <div class="form-group"><label>Phone</label><input name="phone" required></div>
+      </div>
+
+      <h3 style="margin:26px 0 16px;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);">Payment Method</h3>
+      <div class="form-group">
+        <label style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="radio" name="payment_method" value="COD" checked style="width:auto;"> Cash on Delivery</label>
+        <label style="display:flex;gap:10px;align-items:center;margin-bottom:10px;{{ '' if razorpay_enabled else 'opacity:.4;' }}">
+          <input type="radio" name="payment_method" value="Razorpay" style="width:auto;" {{ 'disabled' if not razorpay_enabled }}> Razorpay (UPI / Cards / Netbanking)
+          {% if not razorpay_enabled %}<span style="font-size:11px;color:var(--gray);">— not configured yet</span>{% endif %}
+        </label>
+        <label style="display:flex;gap:10px;align-items:center;{{ '' if stripe_enabled else 'opacity:.4;' }}">
+          <input type="radio" name="payment_method" value="Stripe" style="width:auto;" {{ 'disabled' if not stripe_enabled }}> Stripe (Card)
+          {% if not stripe_enabled %}<span style="font-size:11px;color:var(--gray);">— not configured yet</span>{% endif %}
+        </label>
+      </div>
+      <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:20px;">Place Order</button>
+    </form>
+    <div class="summary-box">
+      {% for item in cart %}
+      <div class="subrow"><span>{{ item.name }} × {{ item.qty }}</span><span>₹{{ inr(item.price*item.qty) }}</span></div>
+      {% endfor %}
+      <div class="subrow" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line);"><span>Subtotal</span><span>₹{{ inr(subtotal) }}</span></div>
+      {% if discount %}<div class="subrow"><span>Discount</span><span>−₹{{ inr(discount) }}</span></div>{% endif %}
+      <div class="subrow"><span>Shipping</span><span>{{ '₹'+inr(shipping) if shipping else 'Free' }}</span></div>
+      <div class="subrow total"><span>Total</span><span>₹{{ inr(total) }}</span></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

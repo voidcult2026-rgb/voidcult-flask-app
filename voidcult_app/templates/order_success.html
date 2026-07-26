@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed — VOID CULT{% endblock %}
+{% block content %}
+<section style="padding-top:80px;text-align:center;">
+  <span class="eyebrow" style="display:block;margin-bottom:16px;">Order Confirmed</span>
+  <h1 class="display" style="font-size:36px;margin-bottom:20px;">Thank You.</h1>
+  {% if order %}
+  <p style="color:var(--gray);margin-bottom:40px;">Order #{{ order['order_number'] }} — total ₹{{ inr(order['total']) }}. A confirmation has been sent to your email.</p>
+  <div style="max-width:500px;margin:0 auto;text-align:left;border:1px solid var(--line);padding:24px;">
+    {% for item in items %}
+    <div class="subrow"><span>{{ item['product_name'] }} × {{ item['qty'] }}</span><span>₹{{ inr(item['price']*item['qty']) }}</span></div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color:var(--gray);">Order not found.</p>
+  {% endif %}
+  <a href="{{ url_for('main.shop') }}" class="btn btn-outline" style="margin-top:36px;">Continue Shopping</a>
+</section>
+{% endblock %}

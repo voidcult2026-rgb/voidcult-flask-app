@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}{% set active='coupons' %}{% block page_title %}Coupons{% endblock %}
+{% block content %}
+<div class="panel-row">
+  <div class="panel" style="padding:0;">
+    <table><thead><tr><th>Code</th><th>Discount</th><th>Min Order</th><th>Used</th><th>Status</th><th></th></tr></thead><tbody>
+      {% for c in coupons %}
+      <tr>
+        <td>{{ c['code'] }}</td>
+        <td>{{ c['value'] }}{{ '%' if c['type']=='percentage' else ' ₹ flat' }}</td>
+        <td>₹{{ inr(c['min_order']) }}</td>
+        <td>{{ c['used_count'] }}{% if c['usage_limit'] %} / {{ c['usage_limit'] }}{% endif %}</td>
+        <td><span class="tag {{ 'ok' if c['active'] else 'warn' }}">{{ 'Active' if c['active'] else 'Disabled' }}</span></td>
+        <td style="display:flex;gap:8px;">
+          <form action="{{ url_for('admin.coupon_toggle', coupon_id=c['id']) }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-ghost">{{ 'Disable' if c['active'] else 'Enable' }}</button></form>
+          <form action="{{ url_for('admin.coupon_delete', coupon_id=c['id']) }}" method="post" onsubmit="return confirm('Delete?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-danger">Delete</button></form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody></table>
+  </div>
+  <div class="panel">
+    <h3>New Coupon</h3>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group"><label>Code</label><input name="code" required style="text-transform:uppercase;"></div>
+      <div class="form-group"><label>Type</label><select name="type"><option value="percentage">Percentage</option><option value="flat">Flat Amount</option></select></div>
+      <div class="form-group"><label>Value</label><input type="number" name="value" required></div>
+      <div class="form-group"><label>Minimum Order (₹)</label><input type="number" name="min_order" value="0"></div>
+      <div class="form-group"><label>Usage Limit (optional)</label><input type="number" name="usage_limit"></div>
+      <div class="form-group"><label>Expiry (optional)</label><input type="date" name="expiry"></div>
+      <button type="submit" class="btn btn-solid btn-sm">Create Coupon</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

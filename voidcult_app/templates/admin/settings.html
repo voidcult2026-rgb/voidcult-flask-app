@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}{% set active='cms' %}{% block page_title %}CMS &amp; Settings{% endblock %}
+{% block content %}
+<form method="post">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<div class="panel-row">
+  <div class="panel">
+    <h3>Homepage Hero</h3>
+    <div class="form-group"><label>Eyebrow Text</label><input name="hero_eyebrow" value="{{ settings.hero_eyebrow }}"></div>
+    <div class="form-group"><label>Headline</label><input name="hero_title" value="{{ settings.hero_title }}"></div>
+    <div class="form-group"><label>Subtitle</label><textarea name="hero_subtitle" rows="3">{{ settings.hero_subtitle }}</textarea></div>
+    <div class="form-group"><label>CTA Button Text</label><input name="hero_cta_text" value="{{ settings.hero_cta_text }}"></div>
+  </div>
+  <div class="panel">
+    <h3>Announcement Bar</h3>
+    <div class="form-group"><label>Text</label><input name="announcement_text" value="{{ settings.announcement_text }}"></div>
+    <h3 style="margin-top:24px;">Site Identity</h3>
+    <div class="form-group"><label>Site Name</label><input name="site_name" value="{{ settings.site_name }}"></div>
+    <div class="form-group"><label>Contact Email</label><input name="contact_email" value="{{ settings.contact_email }}"></div>
+    <div class="form-group"><label>Contact Phone</label><input name="contact_phone" value="{{ settings.contact_phone }}"></div>
+    <div class="form-group"><label>Instagram URL</label><input name="instagram_url" value="{{ settings.instagram_url }}"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Brand Colors</h3>
+  <div class="form-grid" style="grid-template-columns:repeat(5,1fr);">
+    <div class="form-group"><label>Black</label><input type="color" name="color_primary" value="{{ settings.color_primary }}"></div>
+    <div class="form-group"><label>Dark Purple</label><input type="color" name="color_purple_dark" value="{{ settings.color_purple_dark }}"></div>
+    <div class="form-group"><label>Purple Glow</label><input type="color" name="color_purple_glow" value="{{ settings.color_purple_glow }}"></div>
+    <div class="form-group"><label>White</label><input type="color" name="color_white" value="{{ settings.color_white }}"></div>
+    <div class="form-group"><label>Gray</label><input type="color" name="color_gray" value="{{ settings.color_gray }}"></div>
+  </div>
+  <p style="font-size:11.5px;color:var(--gray);">Note: color pickers here update the stored brand values; wiring them into the live stylesheet needs a small CSS-variable injection step (see README).</p>
+</div>
+
+<div class="panel">
+  <h3>Footer</h3>
+  <div class="form-group"><label>Footer Description</label><textarea name="footer_text" rows="2">{{ settings.footer_text }}</textarea></div>
+</div>
+
+<div class="panel-row-2">
+  <div class="panel">
+    <h3>About Page</h3>
+    <div class="form-group"><textarea name="about_content" rows="5">{{ settings.about_content }}</textarea></div>
+  </div>
+  <div class="panel">
+    <h3>FAQs</h3>
+    <div class="form-group"><textarea name="faqs" rows="5">{{ settings.faqs }}</textarea></div>
+  </div>
+</div>
+<div class="panel-row-2">
+  <div class="panel">
+    <h3>Shipping Policy</h3>
+    <div class="form-group"><textarea name="shipping_policy" rows="4">{{ settings.shipping_policy }}</textarea></div>
+  </div>
+  <div class="panel">
+    <h3>Return Policy</h3>
+    <div class="form-group"><textarea name="return_policy" rows="4">{{ settings.return_policy }}</textarea></div>
+  </div>
+</div>
+<div class="panel-row-2">
+  <div class="panel">
+    <h3>Privacy Policy</h3>
+    <div class="form-group"><textarea name="privacy_policy" rows="4">{{ settings.privacy_policy }}</textarea></div>
+  </div>
+  <div class="panel">
+    <h3>Terms of Service</h3>
+    <div class="form-group"><textarea name="terms_of_service" rows="4">{{ settings.terms_of_service }}</textarea></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Payment Gateway Keys</h3>
+  <p style="font-size:11.5px;color:var(--gray);margin-bottom:16px;">Enter your live merchant keys here to activate Razorpay/Stripe at checkout. Until filled in, checkout falls back to Cash on Delivery only.</p>
+  <div class="form-grid">
+    <div class="form-group"><label>Razorpay Key ID</label><input name="razorpay_key_id" value="{{ settings.razorpay_key_id }}"></div>
+    <div class="form-group"><label>Razorpay Key Secret</label><input type="password" name="razorpay_key_secret" value="{{ settings.razorpay_key_secret }}"></div>
+  </div>
+  <div class="form-grid">
+    <div class="form-group"><label>Stripe Publishable Key</label><input name="stripe_publishable_key" value="{{ settings.stripe_publishable_key }}"></div>
+    <div class="form-group"><label>Stripe Secret Key</label><input type="password" name="stripe_secret_key" value="{{ settings.stripe_secret_key }}"></div>
+  </div>
+</div>
+
+<button type="submit" class="btn btn-solid">Save All Settings — Live Now</button>
+</form>
+{% endblock %}
