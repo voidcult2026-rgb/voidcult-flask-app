@@ -11,6 +11,7 @@ CHANGE THE ADMIN PASSWORD IMMEDIATELY — see README.md.
 """
 from flask import Flask, session, request
 from config import Config
+import os
 from database import close_db, init_db, get_db
 from utils.security import generate_csrf_token, current_user
 from utils.helpers import get_setting
@@ -18,7 +19,7 @@ from utils.helpers import get_setting
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    app.secret_key = os.environ.get('SECRET_KEY')
     with app.app_context():
         init_db(app)
 
