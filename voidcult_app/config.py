@@ -18,8 +18,8 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-key-change-this-in-production-4f8a2e1c9b')
     DATABASE_PATH = os.environ.get('DATABASE_PATH', os.path.join(BASE_DIR, 'voidcult.db'))
- UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', os.path.join(BASE_DIR, 'static', 'uploads', 'products'))
-SITE_UPLOAD_FOLDER = os.environ.get('SITE_UPLOAD_FOLDER', os.path.join(BASE_DIR, 'static', 'uploads', 'site'))
+    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', os.path.join(BASE_DIR, 'static', 'uploads', 'products'))
+    SITE_UPLOAD_FOLDER = os.environ.get('SITE_UPLOAD_FOLDER', os.path.join(BASE_DIR, 'static', 'uploads', 'site'))
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
     IMAGE_MAX_DIMENSION = 1600      # px — images are downscaled to this before saving
