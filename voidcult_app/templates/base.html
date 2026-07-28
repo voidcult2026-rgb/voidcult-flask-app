@@ -16,6 +16,16 @@
   --white: {{ site_setting('color_white', '#FFFFFF') }};
   --gray: {{ site_setting('color_gray', '#A9A9A9') }};
 }
+    /* Background gradient (Admin > CMS & Settings > Background Gradient) —
+   replaces the flat single-color background with a multi-color blend. */
+#smoke-bg{
+  background: linear-gradient(
+    {{ site_setting('bg_gradient_angle', '135') }}deg,
+    {{ site_setting('bg_gradient_color1', '#000000') }},
+    {{ site_setting('bg_gradient_color2', '#1A0826') }},
+    {{ site_setting('bg_gradient_color3', '#6A0DAD') }}
+  ) !important;
+}
 </style>
 {% block extra_head %}{% endblock %}
 </head>
