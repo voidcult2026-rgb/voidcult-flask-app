@@ -24,7 +24,8 @@ def close_db(e=None):
         db.close()
 
 def init_db(app):
-    """Create tables (if missing) and seed default content. Called once at startup."""
+    """Create tables (if missing), seed first-run demo data, and ensure any
+    newly-added settings keys exist even on an already-deployed database."""
     db_path = app.config['DATABASE_PATH']
     first_run = not os.path.exists(db_path)
     conn = sqlite3.connect(db_path)
@@ -36,19 +37,19 @@ def init_db(app):
     if first_run:
         _seed(conn)
         conn.commit()
+
+    # Runs on EVERY startup (not just first run): INSERT OR IGNORE means this
+    # only adds settings keys that don't exist yet — it never overwrites a
+    # value the admin has already changed. This is what lets us add new
+    # editable settings (like background gradient colors) after the site is
+    # already live, without needing to delete the database.
+    _ensure_settings(conn)
+    conn.commit()
     conn.close()
 
-def _seed(conn):
-    """Populate first-run demo data: admin account, settings, categories, sample products."""
-    from werkzeug.security import generate_password_hash
-
-    # --- default admin account ---
-    conn.execute(
-        "INSERT INTO users (name, email, password_hash, is_admin, email_verified) VALUES (?,?,?,1,1)",
-        ("VOID CULT Admin", "admin@voidcult.com", generate_password_hash("ChangeMe123!"))
-    )
-
-    # --- site settings (everything the admin CMS can edit) ---
+def _ensure_settings(conn):
+    """Insert any settings keys that don't exist yet. Safe to call repeatedly —
+    existing values are never touched (INSERT OR IGNORE)."""
     defaults = {
         "site_name": "VOID CULT",
         "hero_eyebrow": "Chapter 04 — Luxury Streetwear",
@@ -62,6 +63,11 @@ def _seed(conn):
         "color_purple_glow": "#6A0DAD",
         "color_white": "#FFFFFF",
         "color_gray": "#A9A9A9",
+        # --- background gradient (replaces flat single-color background) ---
+        "bg_gradient_color1": "#000000",
+        "bg_gradient_color2": "#1A0826",
+        "bg_gradient_color3": "#6A0DAD",
+        "bg_gradient_angle": "135",
         "footer_text": "VOID CULT is luxury streetwear built in black and dark violet — one limited drop at a time.",
         "contact_email": "support@voidcult.com",
         "contact_phone": "+91 90000 00000",
@@ -79,6 +85,17 @@ def _seed(conn):
     }
     for k, v in defaults.items():
         conn.execute("INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)", (k, v))
+
+def _seed(conn):
+    """Populate first-run demo data: admin account, categories, sample products, coupons.
+    Settings are handled separately by _ensure_settings() so they can grow over time."""
+    from werkzeug.security import generate_password_hash
+
+    # --- default admin account ---
+    conn.execute(
+        "INSERT INTO users (name, email, password_hash, is_admin, email_verified) VALUES (?,?,?,1,1)",
+        ("VOID CULT Admin", "admin@voidcult.com", generate_password_hash("ChangeMe123!"))
+    )
 
     # --- categories ---
     categories = [
