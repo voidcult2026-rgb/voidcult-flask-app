@@ -6,6 +6,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <style>
+:root{
+  --black: {{ site_setting('color_primary', '#000000') }};
+  --purple-dark: {{ site_setting('color_purple_dark', '#1A0826') }};
+  --purple-glow: {{ site_setting('color_purple_glow', '#6A0DAD') }};
+  --white: {{ site_setting('color_white', '#FFFFFF') }};
+  --gray: {{ site_setting('color_gray', '#A9A9A9') }};
+}
+</style>
 {% block extra_head %}{% endblock %}
 </head>
 <body>
